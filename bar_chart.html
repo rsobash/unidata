@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bar Chart Example</title>
+<script src="https://d3js.org/d3.v3.js"></script>
+
+<style type="text/css">
+svg        { border: 1px solid #DDD; }
+.bar       { fill: steelblue; }
+.bar:hover { fill: orange; }
+</style>
+
+</head>
+<body>
+
+<script type="text/javascript">
+
+// array of data
+var data = [
+150, 230, 180, 90, 100, 50, 300, 270, 
+500, 230, 100, 150, 75, 250, 180, 150,
+500, 230, 100, 150, 75, 250, 180, 150,
+150, 230, 180, 90, 100, 50];
+
+// set up svg container
+var svg = d3.select("body")
+            .append("svg")
+            .attr("width", 1250) 
+            .attr("height", 600);
+
+// add svg rectangles within svg container
+svg.selectAll(".bar")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr({
+        class  : "bar",
+        height  : function(d) { return d; },
+        width : "30",
+        x      : function(d, i) { return i*40 + 10; },
+        y      : function(d) { return 600-d; },
+     });
+
+d3.select('svg').on("click", function() {
+    data = d3.shuffle(data);
+
+    // **D3 update pattern**
+    // bind data to DOM elements
+    var bars = svg.selectAll(".bar").data(data)
+
+    // remove rectangles not associated with data
+    bars.exit().remove();
+
+    // add rectangles associated with new data
+    bars.enter()
+    .append("rect")
+    .attr({
+        class  : "bar",
+        height  : function(d) { return d; },
+        width : "30",
+        x      : function(d, i) { return i*40 + 10; },
+        y      : function(d) { return 600-d; },
+     });
+
+    // transition existing rectangles to new state
+    bars.transition().duration(250)
+       .attr({
+          height: function(d) { return d; },
+          y      : function(d) { return 600-d; },
+       });
+});
+
+</script>
+
+</body>
+</html>
